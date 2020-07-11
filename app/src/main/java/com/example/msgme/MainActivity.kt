@@ -18,11 +18,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun buttonManager(){
+        //Login button
         btn_log_in.setOnClickListener {
+            //Setting variables
             val email = et_email_login.text.toString().trim()
             val password = et_password_login.text.toString().trim()
+            //Checking for null strings
             if (email.isEmpty() || password.isEmpty()) return@setOnClickListener
             auth.signInWithEmailAndPassword(email,password).addOnCompleteListener (this){
+                //If signing is successful
                 if (it.isSuccessful)
                 {
                     Log.d("login","Successful login")
