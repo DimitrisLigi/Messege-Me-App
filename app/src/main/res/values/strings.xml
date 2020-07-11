@@ -4,4 +4,8 @@
     <string name="enter_your_user_name_or_e_mail">Enter your e-mail</string>
     <string name="password">Password</string>
     <string name="log_in">Log In</string>
+    <string name="sing_up_str">Sing Up</string>
+    <string name="username_str">Username</string>
+    <string name="e_mail_str">E-mail</string>
+    <string name="subcribe_str">Don\'t have an account yet? Subcribe here</string>
 </resources>
