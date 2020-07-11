@@ -13,13 +13,16 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_register.*
 import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
+    //Variables declaration
     private lateinit var auth: FirebaseAuth
     private var selectedPhotoUri : Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -54,7 +57,7 @@ class RegisterActivity : AppCompatActivity() {
             selectedPhotoUri = data.data
             val inputStream = contentResolver.openInputStream(selectedPhotoUri!!)
             val drawable = Drawable.createFromStream(inputStream,selectedPhotoUri.toString())
-            btn_image_upload.setBackgroundDrawable(drawable)
+            iv_circle.setImageDrawable(drawable)
         }else{
             Log.d("login","Pali malakia egine!!!!!")
         }
@@ -101,8 +104,26 @@ class RegisterActivity : AppCompatActivity() {
         //Adding the image to firebase
         ref.putFile(selectedPhotoUri!!).addOnSuccessListener {
             Log.d("Upload Image","Image successfully upload")
+            //Reference to image location inside Firebase
+            ref.downloadUrl.addOnSuccessListener {
+                Log.d("Upload Image","Now i have access to the image inside Firebase which is $it")
+                saveUserToFirebaseDatabase(it.toString())
+            }
         }.addOnFailureListener {
             Log.d("Upload image","Image didn't upload")
         }
     }
+    private fun saveUserToFirebaseDatabase(profilePictureUri: String){
+        val uid = FirebaseAuth.getInstance().uid
+        val tempUserName = et_username.text.toString().trim()
+        val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
+        val user = User(uid,tempUserName,profilePictureUri)
+        ref.setValue(user).addOnCompleteListener {
+            Log.d("register","The database for the user was created!")
+        }.addOnFailureListener {
+            Log.d("register","The user didn't registered in database")
+        }
+    }
 }
+
+class User(val uid: String?, val username: String, val profilePictureUri: String)
