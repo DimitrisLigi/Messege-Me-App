@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">MsgMe</string>
     <string name="title">Msg Me</string>
-    <string name="enter_your_user_name_or_e_mail">Enter your user name or e-mail</string>
+    <string name="enter_your_user_name_or_e_mail">Enter your e-mail</string>
 </resources>
