@@ -107,6 +107,8 @@
         android:id="@+id/iv_circle"
         android:layout_width="140dp"
         android:layout_height="140dp"
+        app:civ_border_width="4dp"
+        app:civ_border_color="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/btn_image_upload"
         app:layout_constraintEnd_toEndOf="@+id/btn_image_upload"
         app:layout_constraintStart_toStartOf="@+id/btn_image_upload"

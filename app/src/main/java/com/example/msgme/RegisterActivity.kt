@@ -125,6 +125,9 @@ class RegisterActivity : AppCompatActivity() {
         val user = User(uid,tempUserName,profilePictureUri)
         ref.setValue(user).addOnCompleteListener {
             Log.d("register","The database for the user was created!")
+            val intent = Intent(this,LatestMessageActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }.addOnFailureListener {
             Log.d("register","The user didn't registered in database")
         }
