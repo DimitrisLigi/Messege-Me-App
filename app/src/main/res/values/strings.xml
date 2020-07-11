@@ -8,4 +8,8 @@
     <string name="username_str">Username</string>
     <string name="e_mail_str">E-mail</string>
     <string name="subcribe_str">Don\'t have an account yet? Subcribe here</string>
+    <string name="upload_your_image_str">Image upload</string>
+    <string name="subcribe_str_only">Subcribe</string>
+    <string name="already_have_an_account">I have already an account. Sing in here!</string>
+    <string name="confirm_password_str">Confirm password</string>
 </resources>
