@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -55,9 +57,12 @@ class RegisterActivity : AppCompatActivity() {
         if (requestCode == 0 && -1 == Activity.RESULT_OK  && data != null){
             Log.d("login","Photo was selected!")
             selectedPhotoUri = data.data
-            val inputStream = contentResolver.openInputStream(selectedPhotoUri!!)
-            val drawable = Drawable.createFromStream(inputStream,selectedPhotoUri.toString())
-            iv_circle.setImageDrawable(drawable)
+            val myBitmap = MediaStore.Images.Media.getBitmap(contentResolver,selectedPhotoUri)
+            iv_circle.setImageBitmap(myBitmap)
+            btn_image_upload.alpha = 0f
+//            val inputStream = contentResolver.openInputStream(selectedPhotoUri!!)
+//            val drawable = Drawable.createFromStream(inputStream,selectedPhotoUri.toString())
+//
         }else{
             Log.d("login","Pali malakia egine!!!!!")
         }
