@@ -134,4 +134,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 }
 
-class User(val uid: String?, val username: String, val profilePictureUri: String)
+class User(val uid: String?, val username: String, val profilePictureUri: String){
+    constructor():this("","","")
+}
