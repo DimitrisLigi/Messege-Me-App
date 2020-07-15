@@ -12,7 +12,6 @@ class LatestMessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_latest_message)
         isUserLoggedIn()
-
     }
 
     private fun isUserLoggedIn(){

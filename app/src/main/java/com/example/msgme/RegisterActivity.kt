@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_register.*
+import java.io.ByteArrayInputStream
+import java.io.DataInputStream
 import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
@@ -32,6 +34,7 @@ class RegisterActivity : AppCompatActivity() {
 
         buttonsManager()
     }
+
     private fun buttonsManager(){
         //Upload a profile image
         btn_image_upload.setOnClickListener {
@@ -54,7 +57,8 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0 && -1 == Activity.RESULT_OK  && data != null){
+
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK  && data != null){
             Log.d("login","Photo was selected!")
             selectedPhotoUri = data.data
             val myBitmap = MediaStore.Images.Media.getBitmap(contentResolver,selectedPhotoUri)
@@ -71,6 +75,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun createUser(){
         val email = et_email.text.toString().trim()
         val password = et_password.text.toString().trim()
+
         if (email.isEmpty() || password.isEmpty()) return
 
         auth.createUserWithEmailAndPassword(email,password)
@@ -100,24 +105,25 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun uploadProfileImageToFirebase(){
-        //Checking if the uri is null
+        //Checking if the photo's uri is null
         if (selectedPhotoUri == null) return
-        //Giving a unique name to the photo
+        //Giving a unique name to the photo file
         val filename = UUID.randomUUID().toString()
-        //Getting the reference storage in firebase
+        //Getting the reference storage in firebase and naming the file with the value filename
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
         //Adding the image to firebase
         ref.putFile(selectedPhotoUri!!).addOnSuccessListener {
-            Log.d("Upload Image","Image successfully upload")
+            Log.d("Upload Image","Image successfully uploaded")
             //Reference to image location inside Firebase
             ref.downloadUrl.addOnSuccessListener {
-                Log.d("Upload Image","Now i have access to the image inside Firebase which is $it")
+                Log.d("Upload Image","Now i have access to the image's Uri inside Firebase which is $it")
                 saveUserToFirebaseDatabase(it.toString())
             }
         }.addOnFailureListener {
             Log.d("Upload image","Image didn't upload")
         }
     }
+
     private fun saveUserToFirebaseDatabase(profilePictureUri: String){
         val uid = FirebaseAuth.getInstance().uid
         val tempUserName = et_username.text.toString().trim()
@@ -134,6 +140,3 @@ class RegisterActivity : AppCompatActivity() {
     }
 }
 
-class User(val uid: String?, val username: String, val profilePictureUri: String){
-    constructor():this("","","")
-}

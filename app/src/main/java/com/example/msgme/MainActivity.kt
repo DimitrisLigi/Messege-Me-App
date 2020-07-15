@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
                 {
                     Log.d("login","Successful login")
                     Toast.makeText(this,"Successful login!",Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this,LatestMessageActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }else
                 {
                     Toast.makeText(this,"Unsuccessful login",Toast.LENGTH_SHORT).show()

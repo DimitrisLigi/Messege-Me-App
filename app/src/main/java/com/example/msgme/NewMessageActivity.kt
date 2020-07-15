@@ -31,13 +31,18 @@ class NewMessageActivity : AppCompatActivity() {
     }
 
     private fun fetchUsers(){
+
         val ref = FirebaseDatabase.getInstance().getReference("/users")
+
+
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
+
                 val adapter = GroupAdapter<GroupieViewHolder>()
 
                 snapshot.children.forEach{
@@ -51,7 +56,8 @@ class NewMessageActivity : AppCompatActivity() {
     }
 }
 
-class UserItem(val user: User): Item<GroupieViewHolder>(){
+class UserItem(private val user: User): Item<GroupieViewHolder>(){
+
     override fun getLayout(): Int {
         return R.layout.user_row_new_message
     }
