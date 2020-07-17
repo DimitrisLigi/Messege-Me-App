@@ -1,25 +1,17 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.msgme
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View
 import android.widget.Toast
-import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_register.*
-import java.io.ByteArrayInputStream
-import java.io.DataInputStream
 import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
@@ -31,7 +23,6 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
         auth = FirebaseAuth.getInstance()
-
         buttonsManager()
     }
 
@@ -49,7 +40,7 @@ class RegisterActivity : AppCompatActivity() {
         }
         //Going back to login activity
         tv_already_an_account.setOnClickListener {
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this,LogInActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -75,42 +66,62 @@ class RegisterActivity : AppCompatActivity() {
     private fun createUser(){
         val email = et_email.text.toString().trim()
         val password = et_password.text.toString().trim()
+        val passwordConf = et_confirm_password.text.toString().trim()
+        val userName = et_username.text.toString().trim()
 
-        if (email.isEmpty() || password.isEmpty()) return
-
-        auth.createUserWithEmailAndPassword(email,password)
-            .addOnCompleteListener(this) {
-                if (it.isSuccessful) {
-                    uploadProfileImageToFirebase()
-                    Log.d("register", "createUserWithEmail:success")
-                    val user = auth.currentUser
-                    Log.d("register", "The uid is ${user?.uid}")
-                    Toast.makeText(this,"User has successfully registered!",Toast.LENGTH_SHORT).show()
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w("register", "createUserWithEmail:failure", it.exception)
+       if (conditionChecking(userName,email,password,passwordConf)){
+            auth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(this) {
+                    if (it.isSuccessful) {
+                        uploadProfileImageToFirebase()
+                        Log.d("register", "createUserWithEmail:success")
+                        val user = auth.currentUser
+                        Log.d("register", "The uid is ${user?.uid}")
+                        Toast.makeText(this,"User has successfully registered!",Toast.LENGTH_SHORT).show()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w("register", "createUserWithEmail:failure", it.exception)
+                        Toast.makeText(
+                            this, "Authentication failed.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                .addOnFailureListener {
+                    Log.d("register","Failed to create a user!")
                     Toast.makeText(
-                        this, "Authentication failed.",
+                        this, "Failed to create new user!",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }
-            .addOnFailureListener {
-                Log.d("register","Fail to create a user!")
-                Toast.makeText(
-                    this, "Failed to create new user!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        }
+        else return
+    }
+
+    private fun conditionChecking(username: String, email: String,password: String,passwordConf: String): Boolean{
+        return if (username.isEmpty() || email.isEmpty() || password.isEmpty() || selectedPhotoUri == null){
+            Toast.makeText(this,"One of the fields is empty",Toast.LENGTH_LONG).show()
+            false
+        }else if (measureStringLength(username) || measureStringLength(email) || measureStringLength(password) || measureStringLength(passwordConf)){
+            Toast.makeText(this,"Username and password should be greater than 4 characters length!",Toast.LENGTH_LONG).show()
+            false
+        }else if (password != passwordConf){
+            Toast.makeText(this,"The passwords does not match",Toast.LENGTH_LONG).show()
+            false
+        }else true
     }
 
     private fun uploadProfileImageToFirebase(){
+
         //Checking if the photo's uri is null
         if (selectedPhotoUri == null) return
+
         //Giving a unique name to the photo file
         val filename = UUID.randomUUID().toString()
+
         //Getting the reference storage in firebase and naming the file with the value filename
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+
         //Adding the image to firebase
         ref.putFile(selectedPhotoUri!!).addOnSuccessListener {
             Log.d("Upload Image","Image successfully uploaded")
@@ -125,10 +136,12 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun saveUserToFirebaseDatabase(profilePictureUri: String){
+
         val uid = FirebaseAuth.getInstance().uid
         val tempUserName = et_username.text.toString().trim()
         val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
         val user = User(uid,tempUserName,profilePictureUri)
+
         ref.setValue(user).addOnCompleteListener {
             Log.d("register","The database for the user was created!")
             val intent = Intent(this,LatestMessageActivity::class.java)
@@ -138,5 +151,7 @@ class RegisterActivity : AppCompatActivity() {
             Log.d("register","The user didn't registered in database")
         }
     }
+
+    private fun measureStringLength(s: String): Boolean = s.length <= 4
 }
 

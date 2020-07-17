@@ -1,5 +1,6 @@
 package com.example.msgme
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,20 +21,12 @@ class NewMessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_message)
         supportActionBar?.title = "Select User"
-//        val adapter = GroupAdapter<GroupieViewHolder>()
-//        adapter.add(UserItem())
-//        adapter.add(UserItem())
-//        adapter.add(UserItem())
-//        adapter.add(UserItem())
-//
-//        recycler_view_new_msg.adapter = adapter
         fetchUsers()
     }
 
     private fun fetchUsers(){
 
         val ref = FirebaseDatabase.getInstance().getReference("/users")
-
 
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -49,6 +42,11 @@ class NewMessageActivity : AppCompatActivity() {
                     Log.d("Message",it.toString())
                     val user= it.getValue(User::class.java)
                     if (user !=null) adapter.add(UserItem(user))
+                }
+                adapter.setOnItemClickListener { item, view ->
+                    val intent = Intent(view.context,ChatLogActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
                 recycler_view_new_msg.adapter = adapter
             }

@@ -12,4 +12,7 @@
     <string name="subcribe_str_only">Subscribe</string>
     <string name="already_have_an_account">I have already an account. Sing in here!</string>
     <string name="confirm_password_str">Confirm password</string>
+    <string name="sent_message_str">Sent Message</string>
+    <string name="sent_str">Sent</string>
+    <string name="helooooo">HELOOOOO</string>
 </resources>
