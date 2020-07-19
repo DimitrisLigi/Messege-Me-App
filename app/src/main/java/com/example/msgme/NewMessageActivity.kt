@@ -29,8 +29,6 @@ class NewMessageActivity : AppCompatActivity() {
         fetchUsers()
     }
 
-
-
     private fun fetchUsers(){
 
         val ref = FirebaseDatabase.getInstance().getReference("/users")
@@ -48,6 +46,7 @@ class NewMessageActivity : AppCompatActivity() {
                 snapshot.children.forEach{
                     Log.d("Message",it.toString())
                     val user= it.getValue(User::class.java)
+                    //Adding the user to the GroupieView
                     if (user !=null) adapter.add(UserItem(user))
                 }
                 adapter.setOnItemClickListener { item, view ->
@@ -68,7 +67,6 @@ class UserItem(val user: User): Item<GroupieViewHolder>(){
     override fun getLayout(): Int {
         return R.layout.user_row_new_message
     }
-
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.tv_username_new_msg.text = user.username
