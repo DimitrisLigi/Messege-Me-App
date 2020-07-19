@@ -31,7 +31,7 @@ class ChatLogActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat_log)
         recycler_view_chat_log.adapter = adapter
 
-        supportActionBar?.title = user.username
+        supportActionBar?.title = user?.username
         listenForMessages()
         buttonManager()
 
@@ -48,7 +48,7 @@ class ChatLogActivity : AppCompatActivity() {
 
         val fromID = FirebaseAuth.getInstance().uid
         val toUser = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        val toID = toUser.uid
+        val toID = toUser?.uid
         val ref = FirebaseDatabase.getInstance().getReference("/user-messages/$fromID/$toID")
 
         ref.addChildEventListener(object: ChildEventListener{
@@ -76,9 +76,10 @@ class ChatLogActivity : AppCompatActivity() {
                         adapter.add(NewChatFromItem(chatMessage.text))
                     } else {
                         Log.d(TAG,"Adding message to toitem")
-                        adapter.add(NewChatToItem(chatMessage.text,toUser))
+                        adapter.add(NewChatToItem(chatMessage.text,toUser!!))
                     }
-                }else return
+                }
+                recycler_view_chat_log.scrollToPosition(adapter.itemCount -1)
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -92,7 +93,7 @@ class ChatLogActivity : AppCompatActivity() {
         val toUser = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         val message = et_sent_message.text.toString()
         val fromID = FirebaseAuth.getInstance().uid ?: return
-        val toID = toUser.uid
+        val toID = toUser?.uid
 //        val ref = FirebaseDatabase.getInstance().getReference("/messages").push()
         val ref = FirebaseDatabase.getInstance().getReference("/user-messages/$fromID/$toID").push()
         val toRef = FirebaseDatabase.getInstance().getReference("/user-messages/$toID/$fromID").push()
@@ -107,6 +108,11 @@ class ChatLogActivity : AppCompatActivity() {
         }
 
         toRef.setValue(chatMessage)
+
+        val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromID/$toID")
+        latestMessageRef.setValue(chatMessage)
+        val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$toID/$fromID")
+        latestMessageToRef.setValue(chatMessage)
     }
 }
 
