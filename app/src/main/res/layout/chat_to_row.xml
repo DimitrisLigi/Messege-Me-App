@@ -4,34 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="4dp"
+    android:layout_marginBottom="8dp"
     android:background="#00FFFFFF"
-    android:layout_marginBottom="8dp">
+    android:paddingTop="4dp">
 
 
     <TextView
         android:id="@+id/tv_to_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:background="@drawable/message_bubble"
         android:fontFamily="@font/acme"
         android:maxWidth="240dp"
         android:padding="16dp"
-        android:text="Hello ti kaneis nre mali kakaod kfaodf kafodf kdaod fkaosdf kfaofeo kfkasdof keo f kaosf"
+        android:text="hello"
         android:textAlignment="textStart"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/iv_to_row"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_to_row"
         app:layout_constraintTop_toTopOf="@+id/iv_to_row" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_to_row"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        app:civ_border_color="@color/colorAccent"
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        app:layout_constraintVertical_bias="0.026" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
